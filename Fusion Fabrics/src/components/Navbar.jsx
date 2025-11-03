@@ -42,7 +42,7 @@ const Navbar = () => {
         <div className="container">
           {/* Replace DIOR text with logo image */}
           <Link className="navbar-brand dior-brand" to="/">
-            <img src="src/assets/logo1.png" alt="Fusion Fabrics" />
+            <img src="src/assets/logo.png" alt="Fusion Fabrics" />
           </Link>
 
           <button

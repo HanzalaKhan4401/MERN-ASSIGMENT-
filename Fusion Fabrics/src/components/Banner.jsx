@@ -11,7 +11,7 @@ const Banner = () => {
       <div className="carousel-inner">
         <div className="carousel-item active">
           <img
-            src="https://cdn.shopify.com/s/files/1/0378/8262/6187/files/Shopify_Banner_MD_1900x666-1_1024x1024.jpg?v=1630388291"
+            src="https://i.etsystatic.com/11147089/r/il/99d4e2/3608308189/il_1080xN.3608308189_gs9i.jpg"
             className="d-block w-100 img-fluid"
             alt="Slide 1"
             style={{
@@ -23,7 +23,7 @@ const Banner = () => {
         </div>
         <div className="carousel-item">
           <img
-  src="https://teascentedlibrary.files.wordpress.com/2020/01/ad-dior-rose-n-roses.jpg"
+            src="https://s.alicdn.com/@sc04/kf/He9e75195a2f4491c97b88b16baff7253L/LMT2141-Guangzhou-Clothes-Factory-Wholesale-Custom-260-Gsm-100-Cotton-Regular-Fit-T-Shirts-for-Men-for-Women.jpg"
             className="d-block w-100 img-fluid"
             alt="Slide 2"
             style={{
@@ -35,7 +35,7 @@ const Banner = () => {
         </div>
         <div className="carousel-item">
           <img
-            src="https://cdn.shopify.com/s/files/1/0378/8262/6187/files/Shopify_Banner_MD_1900x666-1_1024x1024.jpg?v=1630388291"
+            src="https://t4.ftcdn.net/jpg/10/30/50/29/360_F_1030502985_cW0MyUdKFtsU95TtefMznsAfo041I4LD.jpg"
             className="d-block w-100 img-fluid"
             alt="Slide 3"
             style={{
