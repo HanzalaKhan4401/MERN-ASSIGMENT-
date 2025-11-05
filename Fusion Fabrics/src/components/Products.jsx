@@ -59,7 +59,7 @@ const Products = ({allproducts}) => {
       <div className="text-center mb-5">
         <p 
           style={{
-            color: "#a05260",
+            color: "#2C2C2C",
             fontSize: "0.9rem",
             letterSpacing: "3px",
             fontWeight: "600",
@@ -76,7 +76,7 @@ const Products = ({allproducts}) => {
             fontFamily: "'Playfair Display', serif",
             fontWeight: "600",
             fontStyle: "italic",
-            color: "#a05260",
+            color: "#4A4A4A",
             marginBottom: "0"
           }}
         >

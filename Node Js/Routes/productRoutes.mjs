@@ -7,10 +7,10 @@ const productRouter = express.Router();
 productRouter
 
   // Get Requests
-  .get("/", productController.allProducts)
+  .get("/", productController.index)
 
   // Post Requests
-  .post("/add", productController.addproduct)
+  .post("/add", productController.addproduct) 
   .post("/addproduct", upload.array("image", 5), productController.addProductWithImage);
 
 

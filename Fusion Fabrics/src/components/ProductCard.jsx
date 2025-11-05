@@ -35,7 +35,8 @@ const ProductCard = ({ id, img, title, oldPrice, newPrice }) => {
             </button>
           ) : (
             <button 
-              className="btn btn-outline-danger btn-sm" 
+              className="btn btn-sm"
+                style={{ color: '#2C2C2C', border: '1px solid #4A4A4A' }} 
               onClick={(e) => {
                 e.preventDefault();
                 addToWishlist({ id, img, title, oldPrice, newPrice });

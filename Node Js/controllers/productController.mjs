@@ -1,7 +1,7 @@
 import Product from "../models/productModel.mjs";
 
 //Fetch All Products
-let allProducts = async (req, res) => {
+let index = async (req, res) => {
     try {
         let products = await Product.find();
         if(products){
@@ -121,10 +121,10 @@ let addProductWithImage = async (req, res) => {
 // }
 
 
-const productController = { 
-    allProducts,
-    addproduct,
-    addProductWithImage
-}
+const productController = {
+  index,
+  addproduct,
+  addProductWithImage,
+};
 
 export default productController;

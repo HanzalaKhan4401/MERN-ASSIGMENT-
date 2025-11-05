@@ -32,7 +32,7 @@ const Categories = () => {
       <h5
         className="text-uppercase"
         style={{
-          color: '#B8905B', // aesthetic gold-beige
+          color: '#2C2C2C', // aesthetic gold-beige
           fontWeight: '600',
           letterSpacing: '2px',
           fontSize: '14px'
@@ -46,7 +46,7 @@ const Categories = () => {
         style={{
           fontFamily: 'Playfair Display, serif',
           fontSize: '2.8rem',
-          color: "#a05260",
+          color: "#4A4A4A",
           fontStyle: 'italic'
         }}
       >
