@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv"
 import productRouter from "./Routes/productRoutes.mjs";
 import cors from "cors";
+import userRouter from "./Routes/userRoutes.mjs";
+
 
 dotenv.config();
 
@@ -18,6 +20,7 @@ app.get("/", (req, res) => {
 
 //Routers
 app.use("/product", productRouter);
+app.use("/user", userRouter);
 
 //MongoDb Connectivity;
 

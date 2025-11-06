@@ -91,14 +91,14 @@ const Products = ({allproducts}) => {
             <Link to={`/product/${index}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <ProductCard
                 id={index}
-                img={item.images[0]}
+                img={item.images}
                 title={item.title}
                 oldPrice={item.price}
                 newPrice={item.price}
               />
             </Link>
           </div>
-        ))}
+        ))} 
       </div>
 
       {/* View Button */}

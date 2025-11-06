@@ -1,27 +1,46 @@
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
-const productSchema = new Schema({
-  title: { type: String, required: [true, "Title Is Required"] },
-  discription: { type: String },
-  price: { type: Number, required: [true, "Price Is Required"] },
-  discount: {
-    type: Number,
-    min: [0, "Minimum Discount Of Product Must Be 0"],
-    max: [0, "Maximum Discount Of Product Must Be 5"],
-    required: [true, "Discount Is Required"],
+const productSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    stock: {
+      type: Number,
+      required: true,
+    },
+    brand: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      max: [5, "Maximum rating must be 5"], // ✅ message fixed
+      default: 0,
+    },
+    images: [String], // ✅ simple string array (Cloudinary URLs)
   },
-  rating: {
-    type: Number,
-    min: [0, "Minimum Discount Of Product Must Be 0"],
-    max: [0, "Maximum Discount Of Product Must Be 5"],
-    default: 0,
-  },
-  stock: { type: Number, min: [1, "Minimum stock of product must be 1"] },
-  brand: {type: String, required: [true, "Brand Is Required"]},
-  category: {type: String, required: [true, "Category Is Required"]},
-  images: {type: {String}, required: [true, "Brand Is Required"]},
-});
-
+  { timestamps: true }
+);
 const Product = mongoose.model("Product", productSchema);
 export default Product;

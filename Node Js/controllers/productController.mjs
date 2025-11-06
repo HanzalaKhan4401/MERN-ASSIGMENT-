@@ -1,19 +1,19 @@
 import Product from "../models/productModel.mjs";
 
 //Fetch All Products
-let index = async (req, res) => {
-    try {
-        let products = await Product.find();
-        if(products){
-            res.status(200).json({message: "Our Products", products:products});
-        }else{
-            res.status(500).json({message: "Failed To Fetch All Products"});
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: error.message});
+
+let allProducts = async (req, res) => {
+  try {
+    let products = await Product.find();
+    if (products) {
+      res.status(200).json({ message: "Our Products", products: products });
+    } else {
+      res.status(500).json({ message: "Failed To Fetch All Products...!" });
     }
-}
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 //Add Product
@@ -33,9 +33,9 @@ let addproduct = async (req, res) => {
         });
         let addprod = await newProduct.save();
         if(addprod){
-            res.status(200).json({message: "Product Added Successfully", product:addprod});
+            res.status(200).json({message: "Product Added Successfully...!", product:addprod});
         }else{
-            res.status(500).json({message: "Failed To Add Product"});
+            res.status(500).json({message: "Failed To Add Product...!"});
         }
     } catch (error) {
         console.log(error);
@@ -47,84 +47,100 @@ let addproduct = async (req, res) => {
 // Add Product With Image
 // Add Product With Image
 let addProductWithImage = async (req, res) => {
-    try {
-        console.log("Files:", req.files);
-        console.log("Body:", req.body);
+  try {
+    console.log("Files:", req.files);
+    console.log("Body:", req.body);
 
-        let imagesArray = [];
-        if(req.files && req.files.length > 0){
-            req.files.forEach(file => {
-                console.log(file); // Log to see what keys exist
-                // CloudinaryStorage may return file.path, file.filename, or file.url
-                imagesArray.push(file.path || file.filename || file.url);
-            });
-        }
-
-        const product = req.body;
-        let newProduct = new Product({
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            discount: product.discount,
-            stock: product.stock,
-            brand: product.brand,
-            category: product.category,
-            rating: product.rating,
-            images: imagesArray,
-        });
-
-        let addprod = await newProduct.save();
-
-        if(addprod){
-            res.status(200).json({message: "Product Added Successfully with Images!", product: addprod});
-        } else {
-            res.status(500).json({message: "Failed To Add Product with Images!"});
-        }
-    } catch (error) {
-        console.log("Error in addProductWithImage:", error);
-        res.status(500).json({message: error.message});
+    // ✅ Convert uploaded files to array of URLs
+    let imagesArray = [];
+    if (req.files && req.files.length > 0) {
+      imagesArray = req.files.map((file) => file.path || file.url);
     }
+
+    const {
+      title,
+      description,
+      price,
+      discount,
+      stock,
+      brand,
+      category,
+      rating,
+    } = req.body;
+
+    // ✅ Create new product
+    const newProduct = new Product({
+      title,
+      description,
+      price,
+      discount,
+      stock,
+      brand,
+      category,
+      rating,
+      images: imagesArray,
+    });
+
+    const savedProduct = await newProduct.save();
+
+    res.status(200).json({
+      message: "✅ Product Added Successfully with Images...!",
+      product: savedProduct,
+    });
+  } catch (error) {
+    console.log("❌ Error in addProductWithImage:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// get product by id
+let getProductById = async (req, res) => {
+  try {
+    const id = req.params.id; // URL se id le rahe hain
+    console.log("Requested Product ID:", id);
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product Not Found...!" });
+    }
+
+    res.status(200).json({ message: "Product Found", product });
+  } catch (error) {
+    console.log("Error in singleProduct:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// get product by brand
+
+const getProductByBrand = async (req, res) => {
+  try {
+    let brand = req.params.brand;
+    let products = await product.find({ brand: brand }); // find returns an array of objects
+    if(products.length > 0){
+      res.status(200).json({ message: `Showing Products Of ${brand}`, products: products});
+    }else{
+      res.status(404).json({ message: "No Product Found...!"})
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message});
+  }
 }
 
 
-// let addProductWithImage = async (req, res) =>{
-//     try {
-//         console.log("Files:", req.files);
-//         console.log("Body:", req.body);
 
-//         let imagesArray = [];
-//        req.files.forEach((element) => {
-//          imagesArray.push(element.path);
-//        });
-//         const product = req.body;
-//         let newProduct = new Product({
-//           title: product.title,
-//           description: product.description,
-//           price: product.price,
-//           discount: product.discount,
-//           stock: product.stock,
-//           brand: product.brand,
-//           category: product.category,
-//           rating: product.rating,
-//           images: imagesArray,
-//         });
-//         let addprod = await newProduct.save();
-//         if(addprod){
-//             res.status(200).json({message: "Product Added Successfully...!", product:addprod});
-//         }else{
-//             res.status(500).json({message: "Failed To Add Product...!"});
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({message: error.message});
-//     }
-// }
 
 
 const productController = {
-  index,
+  allProducts,
   addproduct,
   addProductWithImage,
+  getProductById,
+  getProductByBrand,
 };
 
 export default productController;

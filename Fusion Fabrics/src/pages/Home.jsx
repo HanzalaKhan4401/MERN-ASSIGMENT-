@@ -14,11 +14,11 @@ import axios from 'axios';
 const Home = () => {
   const [products,setProducts]= useState([])
 // api - call to fetch all products
-
+ 
 
 const   getProducts=async ()=>{
   try {
-const response= await axios.get("http://localhost:3000/product");
+const response= await axios.get("http://localhost:5000/product");
 console.log(response.data)
 setProducts(response.data.products)
     
@@ -38,7 +38,7 @@ useEffect(()=>{
       <Categories />
       <BestSelling />
       <Products allproducts={products} />
-      <Footer/>
+      <Footer />
     </div>
   );
 };

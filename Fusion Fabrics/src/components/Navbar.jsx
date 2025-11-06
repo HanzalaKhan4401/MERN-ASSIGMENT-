@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useCart } from "./cartContext";
 import { useWishlist } from "./WishlistContext";
+import logo from "../assets/logo.png"; // imported logo
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,9 +41,9 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'black' }}>
         <div className="container">
-          {/* Replace DIOR text with logo image */}
+          {/* Use imported logo */}
           <Link className="navbar-brand dior-brand" to="/">
-            <img src="src/assets/logo.png" alt="Fusion Fabrics" />
+            <img src={logo} alt="Fusion Fabrics" />
           </Link>
 
           <button
