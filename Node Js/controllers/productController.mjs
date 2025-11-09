@@ -1,17 +1,21 @@
 import Product from "../models/productModel.mjs";
 
-//Fetch All Products
-
 let allProducts = async (req, res) => {
   try {
-    let products = await Product.find();
-    if (products) {
-      res.status(200).json({ message: "Our Products", products: products });
-    } else {
-      res.status(500).json({ message: "Failed To Fetch All Products...!" });
+    console.log("Fetching all products...");
+    const products = await Product.find();
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found" });
     }
+
+    return res.status(200).json({
+      message: "Our Products",
+      products,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -131,9 +135,52 @@ const getProductByBrand = async (req, res) => {
   }
 }
 
-
-
-
+// delete product 
+let deleteProduct = async (req, res) => {
+  try {
+    let deleted = await Product.deleteOne({ _id: req.params.id });
+    if (deleted.deletedCount > 0) {
+      res.status(200).json({ message: "Product deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+ 
+// edit product - put request
+let editProduct = async (req, res) =>{
+  try {
+    const id = req.params.id;
+    const prod = await Product.findById(id);
+    if(prod){
+      const product = req.body;
+      let updatedProduct = new Product({
+        _id: id,
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        discount: product.discount,
+        stock: product.stock,
+        brand: product.brand,
+        category: product.category,
+        rating: product.rating,
+        images: product.images,
+      });
+      let updateprod = await Product.updateOne({_id: id}, updatedProduct);
+      if(updateprod){
+        res.status(200).json({message: "Product Update Successfully...!", product: updateprod});
+      }else{
+        res.status(500).json({message: "Failed To Update Product...!"});
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: error.message});
+    
+  }
+};
 
 const productController = {
   allProducts,
@@ -141,6 +188,8 @@ const productController = {
   addProductWithImage,
   getProductById,
   getProductByBrand,
+  deleteProduct,
+  editProduct,
 };
 
 export default productController;

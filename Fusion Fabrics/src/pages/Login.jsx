@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // <-- Very important!
 
 import { FaEnvelope, FaLock } from 'react-icons/fa';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate(); // <-- For redirect
@@ -34,7 +35,7 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
@@ -44,31 +45,71 @@ const Login = () => {
       setErrors({});
       console.log('Login Successful:', formData);
 
-      // Yahan backend ka API lagta normally
-      // Abhi bas directly redirect kar rahe hain
+      // Login ApI call can be made here
+      try {
+        console.log(formData)
+        const login = await axios.post("http://localhost:5000/user/login", formData);
+        if (login.status == 200) {
+          let { token, user, message } = login.data
+          let role = user.role
+          console.log(message)
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+          alert(message);
+          if (role == "admin") {
+            navigate('/add');
+          } else {
+            navigate('/');
+          }
+        } else {
 
-      navigate('/'); // <-- After login, redirect to Home
+          alert("Login Failed.");
+        }
+
+
+      } catch (error) {
+
+        console.log(error)
+        if (error.status == 401) {
+          console.log(error.response.data.message)
+          alert(error.response.data.message);
+
+        }
+        else if (error.status == 404) {
+          console.log(error.response.data.message)
+          alert(error.response.data.message);
+          navigate('/signup');
+        } else {
+          console.log(error)
+          alert("Login Failed.");
+        }
+
+
+
+      }
+
+
     }
   };
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '90vh' }}>
       <div className="card p-4 shadow-lg" style={{ width: '100%', maxWidth: '450px', borderRadius: '20px', background: '#f8f9fa' }}>
-        
+
         <h2 className="text-center mb-4" style={{ fontFamily: 'Playfair Display, serif', letterSpacing: '2px' }}>
           Welcome Back
         </h2>
 
         <form onSubmit={handleSubmit}>
-          
+
           <div className="mb-3">
             <label className="form-label">Email</label>
             <div className="input-group">
               <span className="input-group-text bg-white"><FaEnvelope /></span>
-              <input 
-                type="email" 
-                className={`form-control ${errors.email ? 'is-invalid' : ''}`} 
-                name="email" 
+              <input
+                type="email"
+                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
@@ -81,10 +122,10 @@ const Login = () => {
             <label className="form-label">Password</label>
             <div className="input-group">
               <span className="input-group-text bg-white"><FaLock /></span>
-              <input 
-                type="password" 
-                className={`form-control ${errors.password ? 'is-invalid' : ''}`} 
-                name="password" 
+              <input
+                type="password"
+                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                name="password"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"

@@ -10,5 +10,7 @@ userRouter
 
 //Post Requests
 .post("/signup", userController.Signup)
+.post("/login", userController.login)
+.post("/sendEmail", userController.sendEmail)
 
-export default userRouter;
+export default userRouter; 

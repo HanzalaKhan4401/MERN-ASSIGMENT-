@@ -11,7 +11,7 @@ productRouter
   .get("/", productController.allProducts)
   // .get("/",auth, productController.allProducts)
 
-  // Get single product (keep this at bottom)
+  // Get single product (keep this at bottom) 
   .get("/:id", productController.getProductById)
   .get("/brand/:brand", productController.getProductByBrand)
 
@@ -24,9 +24,11 @@ productRouter
 
 
 // Delete Requests
+.delete("/:id", productController.deleteProduct)
 
 // Patch Requests
 
 // Put Requests
+.put("/:id", productController.editProduct)
 
 export default productRouter;
