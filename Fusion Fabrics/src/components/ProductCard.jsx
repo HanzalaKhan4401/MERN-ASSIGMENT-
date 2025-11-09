@@ -21,7 +21,7 @@ const ProductCard = ({ id, img, title, oldPrice, newPrice }) => {
           <del className="text-muted me-2">${oldPrice}</del>
           <span className="text-danger fw-bold">${newPrice}</span>
         </p>
-        <div className="d-flex justify-content-center gap-2">
+        <div className="d-flex justify-content-center gap-2"> 
           <button className="btn btn-outline-danger btn-sm">Buy Now</button>
           {isInWishlist(id) ? (
             <button 
