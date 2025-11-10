@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // ✅ import for redirect
 
 const AddProduct = () => {
     const [token, setToken] = useState("");
-    const [mycategories, setCategories] = useState([]); // ✅ fix
+    const [mycategories, setCategories] = useState([]);
+    const navigate = useNavigate(); // ✅ create navigate instance
 
     const addProduct = async (e) => {
         e.preventDefault();
@@ -56,18 +58,19 @@ const AddProduct = () => {
             });
 
             if (add.status === 200) {
-                alert("Product added successfully!");
+                alert("✅ Product added successfully!");
+                navigate("/"); // ✅ redirect to home page
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Failed to add product!");
+            alert("❌ Failed to add product!");
         }
     };
 
     useEffect(() => {
         let jwtToken = localStorage.getItem("token") || "";
         setToken(jwtToken);
-    }, []); // ✅ fix
+    }, []);
 
     return (
         <div className="container py-5">

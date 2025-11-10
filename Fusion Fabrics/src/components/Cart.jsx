@@ -4,7 +4,8 @@ import { useCart } from "./cartContext";
 const Cart = () => {
   const { cart, updateQuantity, removeFromCart } = useCart();
 
-  const subtotal = cart.reduce((sum, item) => sum + item.newPrice * item.quantity, 0);
+  // ✅ FIXED: newPrice → price, and added Number() for safety
+  const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
 
   return (
     <div className="container py-5">
@@ -29,24 +30,41 @@ const Cart = () => {
                 cart.map((item, i) => (
                   <tr key={i}>
                     <td className="d-flex align-items-center gap-3">
-                      <img src={item.img} alt={item.title} style={{ width: 60, height: 60, objectFit: "contain", borderRadius: 8 }} />
+                      <img
+                        src={item.images}
+                        alt={item.title}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          objectFit: "contain",
+                          borderRadius: 8,
+                        }}
+                      />
                       <span>{item.title}</span>
                     </td>
-                    <td>${item.newPrice}</td>
+                    <td>${item.price}</td>
                     <td style={{ width: 120 }}>
                       <select
                         className="form-select"
                         value={item.quantity}
-                        onChange={e => updateQuantity(item.id, parseInt(e.target.value))}
+                        onChange={(e) =>
+                          updateQuantity(item.id, parseInt(e.target.value))
+                        }
                       >
                         {[...Array(10)].map((_, n) => (
-                          <option key={n + 1} value={n + 1}>{(n + 1).toString().padStart(2, '0')}</option>
+                          <option key={n + 1} value={n + 1}>
+                            {(n + 1).toString().padStart(2, "0")}
+                          </option>
                         ))}
                       </select>
                     </td>
-                    <td>${item.newPrice * item.quantity}</td>
+                    <td>${Number(item.price) * item.quantity}</td>
                     <td>
-                      <button className="btn btn-link text-danger fs-4" onClick={() => removeFromCart(item.id)} title="Remove"> 
+                      <button
+                        className="btn btn-link text-danger fs-4"
+                        onClick={() => removeFromCart(item.id)}
+                        title="Remove"
+                      >
                         <i className="bi bi-x-circle"></i>
                       </button>
                     </td>
@@ -56,6 +74,7 @@ const Cart = () => {
             </tbody>
           </table>
         </div>
+
         <div className="col-lg-4">
           <div className="border rounded p-4 shadow-sm" style={{ minWidth: 300 }}>
             <h5 className="fw-bold mb-3">Cart Total</h5>
@@ -71,7 +90,9 @@ const Cart = () => {
               <span className="fw-semibold">Total:</span>
               <span className="fw-semibold">${subtotal}</span>
             </div>
-            <button className="btn btn-danger w-100 rounded-pill">Proceed to checkout</button>
+            <button className="btn btn-danger w-100 rounded-pill">
+              Proceed to checkout
+            </button>
           </div>
         </div>
       </div>
@@ -79,4 +100,4 @@ const Cart = () => {
   );
 };
 
-export default Cart; 
+export default Cart;

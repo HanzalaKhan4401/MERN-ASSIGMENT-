@@ -95,13 +95,13 @@ const sendEmail = async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.USER_EMAIL,
+      pass: process.env.USER_PASS,
     },
   });
 
   let sendMailStatus = await transporter.sendMail({
-    from: `"Verify Email" <${process.env.EMAIL_USER}>`,
+    from: `"Verify Email" <${process.env.USER_EMAIL}>`,
     to: req.body.email,
     subject: req.body.subject,
     html: `<!doctype html>

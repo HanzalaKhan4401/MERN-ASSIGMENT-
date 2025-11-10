@@ -17,7 +17,7 @@ const Wishlist = () => {
                 <img src={item.img} alt={item.title} className="card-img-top mx-auto" style={{ width: 100, height: 100, objectFit: "contain" }} />
                 <div className="card-body">
                   <div className="fw-semibold mb-1" style={{ fontSize: 16 }}>{item.title}</div>
-                  <div className="text-danger mb-1">Price: ${item.newPrice || item.price}</div>
+                  <div className="text-danger mb-1">Price: ${item.price || item.price}</div>
                   <button className="btn btn-outline-danger btn-sm mt-2" onClick={() => removeFromWishlist(item.id)}>
                     Remove
                   </button>

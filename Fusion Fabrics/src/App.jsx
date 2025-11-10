@@ -10,6 +10,7 @@ import ProductDetails from "./components/ProductDetails";
 import Cart from "./components/Cart";
 import Wishlist from "./components/Wishlist";
 import AddProduct from "./pages/addProduct";
+import AddToCard from "./pages/addToCard";
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/add" element={<AddProduct />} />
+        <Route path="/addtocard" element={<AddToCard />} />
       </Routes>
     </>
   );
