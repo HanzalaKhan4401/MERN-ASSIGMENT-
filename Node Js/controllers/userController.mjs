@@ -261,10 +261,179 @@ const sendEmail = async (req, res) => {
 //   }
 // };
 
-const userController = {
-    index,
-    Signup,
-    login,
-    sendEmail,
+// delete user 
+
+let deleteUser = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let deleteuser = await User.findByIdAndDelete(id);
+    if(!deleteuser){
+      res.status(404).json({message: "User Not Found...!"});
+    }else{
+      res.status(200).json({message: "User Deleted Successfully...!"})
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: error.message});
+  }
 }
+
+//edit user 
+let editUser = async (req, res) =>{
+  try {
+    let id = req.params.id;
+    let edituser = await User.findByIdAndUpdate(id, req.body);
+    if(!edituser){
+      res.status(404).json({message: "User Not Found...!"});
+    }else{
+      res.status(200).json({message: "User Updated Successfully...!"})
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "Internal Server Error"});
+  }
+}
+
+// Reset Pasword
+const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if(!token || !password){
+      return res.status(400).json({message: "Token & Password Is Required...!"});
+    }
+    
+    // Hash the token to compare with stored hash
+    const crypto = await import('crypto');
+    const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Find User with this token and check if it's not required
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if(!user){
+      return res.status(400).json({mesage: "Invalid Or Expaired Reset Token...!"});
+    }
+
+    // Hash The New Password
+    const bcrypt = await import("bcrypt");
+    const saltRound = 10;
+    const hashPassword = await bcrypt.hash(password, saltRound);
+
+    // update user password and clear reset token
+    user.password = hashPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    //send confermation email
+    const html = `<div style="font-family:Arial,sans-serif;padding:32px;background:#f7f7fa;border-radius:12px;max-width:520px;margin:auto;box-shadow:0 2px 8px #0001;">
+        <h2 style="color:#07be8a;text-align:center;margin-bottom:24px;">Password Reset Successful</h2>
+        <p style="font-size:16px;color:#222;margin-bottom:16px;">Dear <b>${
+          user.name
+        }</b>,</p>
+        <div style="background:#fff;border-radius:8px;padding:20px 24px;margin-bottom:20px;border:1px solid #eee;">
+          <p style="font-size:15px;color:#333;line-height:1.6;">Your password has been successfully reset. You can now sign in to your account with your new password.</p>
+          <div style="text-align:center;margin:24px 0;">
+            <a href="${
+              process.env.FRONTEND_URL || "http://localhost:3000"
+            }/signin" style="background:#07be8a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold;display:inline-block;">Sign In</a>
+          </div>
+          <p style="font-size:14px;color:#666;margin-top:16px;">If you didn't request this password reset, please contact our support team immediately.</p>
+        </div>
+        <hr style="margin:24px 0;"/>
+        <p style="font-size:12px;color:#888;text-align:center;">&copy; ${new Date().getFullYear()} Hotel Management System</p>
+      </div>`;
+
+await sendEmail({
+  to: user.email,
+  subject: "Password Reset Successfully - Fusion Fabrics",
+  html: html,
+});
+res.status(200).json({message: "Password Reset Successfully...!"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "Internal Server Error...!"});
+  }
+}
+
+// Forgot Password Funcctionality
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if(!email){
+      return res.status(400).json({message: "Email Is Required...!"});
+    }
+    // Find User By Email
+    const user = await User.findOne({ email });
+    if(!user){
+      return res.status(404).json({message: "User Not Found With This Email Address...!"});
+    }
+
+    // Generate Reset Token
+
+    const crypto = await import('crypto');
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    // set token expairy (1 hour from now)
+    const resetPasswordExpire = new Date(Date.now() + 60 * 60 * 1000); 
+
+    //save token to user 
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpire = resetPasswordExpire;
+    await user.save();
+
+    // create reset url 
+    const resetUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
+
+      // email content
+      const html = `<div style="font-family:Arial,sans-serif;padding:32px;background:#f7f7fa;border-radius:12px;max-width:520px;margin:auto;box-shadow:0 2px 8px #0001;">
+        <h2 style="color:#07be8a;text-align:center;margin-bottom:24px;">Password Reset Request</h2>
+        <p style="font-size:16px;color:#222;margin-bottom:16px;">Dear <b>${
+          user.name
+        }</b>,</p>
+        <div style="background:#fff;border-radius:8px;padding:20px 24px;margin-bottom:20px;border:1px solid #eee;">
+          <p style="font-size:15px;color:#333;line-height:1.6;">You requested a password reset for your account. Click the button below to reset your password:</p>
+          <div style="text-align:center;margin:24px 0;">
+            <a href="${resetUrl}" style="background:#07be8a;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold;display:inline-block;">Reset Password</a>
+          </div>
+          <p style="font-size:14px;color:#666;margin-top:16px;">If you didn't request this password reset, please ignore this email.</p>
+          <p style="font-size:14px;color:#666;">This link will expire in 1 hour.</p>
+        </div>
+        <p style="font-size:14px;color:#555;text-align:center;margin-top:24px;">If the button doesn't work, copy and paste this link into your browser:</p>
+        <p style="font-size:12px;color:#888;text-align:center;word-break:break-all;">${resetUrl}</p>
+        <hr style="margin:24px 0;"/>
+        <p style="font-size:12px;color:#888;text-align:center;">&copy; ${new Date().getFullYear()} Hotel Management System</p>
+      </div>`;
+
+      //send email
+
+      await sendMail({
+        to: user.email,
+        subject: "Password Reset Request - Fusion Fabrics",
+        html: html,
+      });
+      res.status(200).json({message: "Password Reset Email Sent Successfully...!", message: "If An Account With That Email Exists, A Password Reset Link Has Been Sent...!"});
+  } catch (error) {
+    console.log("Forgot Password Error:", error)
+    res.status(500).json({message: "Error Sending Password Reset Email...!"})
+  }
+};
+
+// exporting all functions
+const userController = {
+  index,
+  Signup,
+  login,
+  sendEmail,
+  deleteUser,
+  editUser,
+  resetPassword,
+  forgotPassword,
+};
 export default userController;
