@@ -1,7 +1,7 @@
 // src/components/Navbar.jsx
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useCart } from "./cartContext";
+import { useCart } from "../components/CartContext";
 import { useWishlist } from "./WishlistContext";
 import logo from "../assets/logo.png"; // imported logo
 

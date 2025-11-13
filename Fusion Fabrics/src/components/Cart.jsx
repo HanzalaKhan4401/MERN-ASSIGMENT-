@@ -1,11 +1,21 @@
 import React from "react";
-import { useCart } from "./cartContext";
+import { useCart } from "../components/CartContext";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 const Cart = () => {
   const { cart, updateQuantity, removeFromCart } = useCart();
+  const navigate = useNavigate(); // ✅ Create navigate instance
 
-  // ✅ FIXED: newPrice → price, and added Number() for safety
-  const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+  // ✅ subtotal calculation
+  const subtotal = cart.reduce(
+    (sum, item) => sum + Number(item.price) * item.quantity,
+    0
+  );
+
+  // ✅ Function to handle button click
+  const goToCheckout = () => {
+    navigate("/checkout"); // redirect to checkout page
+  };
 
   return (
     <div className="container py-5">
@@ -24,7 +34,9 @@ const Cart = () => {
             <tbody>
               {cart.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-5">Your cart is empty.</td>
+                  <td colSpan={5} className="text-center py-5">
+                    Your cart is empty.
+                  </td>
                 </tr>
               ) : (
                 cart.map((item, i) => (
@@ -90,7 +102,12 @@ const Cart = () => {
               <span className="fw-semibold">Total:</span>
               <span className="fw-semibold">${subtotal}</span>
             </div>
-            <button className="btn btn-danger w-100 rounded-pill">
+
+            {/* ✅ Redirect to Checkout on click */}
+            <button
+              className="btn btn-danger w-100 rounded-pill"
+              onClick={goToCheckout}
+            >
               Proceed to checkout
             </button>
           </div>

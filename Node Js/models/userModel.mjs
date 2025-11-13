@@ -13,6 +13,8 @@ const userSchema = new Schema({
   role: { type: String, default: "user" },
   isVeriffied: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true },
+  resetPasswordToken: { type: String, default: null },
+  resetPasswordExpire: { type: Date, default: null },
 });
  
 const User = mongoose.model("User", userSchema);
